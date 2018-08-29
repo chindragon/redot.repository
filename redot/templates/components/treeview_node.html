@@ -1,0 +1,23 @@
+{% load treeview_filter %}
+{% spaceless %}
+    {% with nodes=node.id|get_next_forumboard_nodes %}
+        {% if nodes|length == 0 %}
+            <li>
+                <a id="boards_treenode_{{ node.id }}" href="#" data-toggle="tooltip" title="[{{ node.id }}]{{ node.description }}">
+                    {% csrf_token %}{{ node.name }}
+                </a>
+            </li>
+        {% else %}
+            <li class="">
+                <a id="boards_treenode_{{ node.id }}" href="#" data-toggle="tooltip" title="[{{ node.id }}]{{ node.description }}">
+                    {% csrf_token %}{{ node.name }}
+                </a>
+                <ul>
+                    {% for node in nodes %}
+                        {% include "components/treeview_node.html" %}
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endif %}
+    {% endwith %}
+{% endspaceless %}

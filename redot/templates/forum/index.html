@@ -1,0 +1,228 @@
+{% extends "forum/base.html" %}
+{% load static %}
+
+{% block title %}
+    红点论坛首页
+{% endblock %}
+{% block local_styles %}
+    <link rel="stylesheet" href="{% static 'css/redot.css' %}">
+    <script src={% static 'forum/js/c_t.js' %}></script>
+    <script src={% static 'forum/js/c_nav.js' %}></script>
+{% endblock %}
+{% block extern_styles_js %}
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="http://static.runoob.com/assets/js/jquery-treeview/jquery.treeview.css" />
+    <link rel="stylesheet" href="http://static.runoob.com/assets/js/jquery-treeview/screen.css" />
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://static.runoob.com/assets/js/jquery-treeview/jquery.cookie.js"></script>
+    <script src="http://static.runoob.com/assets/js/jquery-treeview/jquery.treeview.js" type="text/javascript"></script>
+{% endblock %}
+{% block in_page_js %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $.ajaxSetup({
+                data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+            });
+            $(document).ready(function () {
+                $("#forumtree").treeview({      //启动显示板块列表树形结构
+                });
+
+                $("a[id^='boards_treenode_']").click(function(){
+                    var aid = $(this).attr("id");
+                    var i = aid.lastIndexOf('_');
+                    var dbid = aid.substr(i + 1);
+                    if (dbid == null || dbid == "" || isNaN(dbid))
+                        return;
+                    var title = $(this).text();
+
+                    $.ajax({
+                        type:"POST",
+                        data: {dbid:dbid},
+                        url: "{% url 'query_from_board_tree_node' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                        cache: false,
+                        dataType: "json",
+                        success: function(result){
+                            //alert(result.status);
+                            if(result.status == 'is_not_leaf'){
+                                var html = "<h3 class=\"bg-primary\">" + title + "</h3>";
+                                html += boards_table(result.header, result.data);
+                                $("#tab_card_right_part").html(html);
+                            }
+                            else if(result.status == "is_leaf") {
+                                var html = "<h3 class=\"bg-primary\">" + title + "</h3>";
+                                html += topics_nav(result.nav_items);
+                                html += topics_table(result.header,  result.topics);
+                                $("#tab_card_right_part").html(html);
+                            }
+                            else{
+                                alert("错误状态 status：" + result.status);
+                            }
+                        },
+                        error: function(){
+                            alert("返回错误");
+                        }
+                    });
+                    return false;
+                });
+            });
+        })
+    </script>
+{% endblock %}
+{% block navigation_left_part_items %}
+    <li class="active">
+         <a href="#" data-toggle="tab">首页</a>
+    </li>
+    <li>
+         <a href="#"data-toggle="tab">简介</a>
+    </li>
+    <li>
+         <a href="#" data-toggle="tab">新闻</a>
+    </li>
+    <li>
+         <a href="#" data-toggle="tab">财经</a>
+    </li>
+    <li>
+         <a href="#" data-toggle="tab">体育</a>
+    </li>
+{% endblock %}
+{% block navigation_left_dropdown_menu_items %}
+    <li>
+         <a href="#">栏目设置</a>
+    </li>
+    <li>
+         <a href="#">个人设置</a>
+    </li>
+
+    <li class="divider">分割线</li>
+
+    <li>
+         <a href="#">分区</a>
+    </li>
+    <li>
+         <a href="#">分组</a>
+    </li>
+{% endblock %}
+{% block navigation_right_part_items %}
+    <li class="pull-right">
+         <a href="#" >注册</a>
+    </li>
+    <li class="pull-right">
+         <a href="#">登录</a>
+    </li>
+{% endblock %}
+{% block tab_card_left_part_items %}
+    <div class="col-md-2 column panel panel-primary" id="tab_card_left_part">
+        {% include 'components/treeview.html' %}
+    </div>
+{% endblock %}
+{% block tab_card_right_part_items %}
+    <div class="col-md-8 column" id="tab_card_right_part">
+    </div>
+{% endblock %}
+{% block right_bar %}
+    <div class="col-md-2 column panel panel-success" id="right_bar">
+        <div class="panel-heading">
+                <h3 class="panel-title">
+                    常去板块
+                </h3>
+            </div>
+        <div class="panel-body">
+            <ol>
+                <li>
+                    Lorem ipsum dolor sit amet
+                </li>
+                <li>
+                    Consectetur adipiscing elit
+                </li>
+                <li>
+                    Integer molestie lorem at massa
+                </li>
+                <li>
+                    Facilisis in pretium nisl aliquet
+                </li>
+                <li>
+                    Nulla volutpat aliquam velit
+                </li>
+            </ol>
+        </div>
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                最新
+            </h3>
+        </div>
+        <div class="panel-body">
+            <ol>
+                <li>
+                    Lorem ipsum dolor sit amet
+                </li>
+                <li>
+                    Consectetur adipiscing elit
+                </li>
+                <li>
+                    Integer molestie lorem at massa
+                </li>
+                <li>
+                    Facilisis in pretium nisl aliquet
+                </li>
+                <li>
+                    Nulla volutpat aliquam velit
+                </li>
+            </ol>
+        </div>
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                点击榜
+            </h3>
+        </div>
+        <div class="panel-body">
+            <ol>
+                <li>
+                    Lorem ipsum dolor sit amet
+                </li>
+                <li>
+                    Consectetur adipiscing elit
+                </li>
+                <li>
+                    Integer molestie lorem at massa
+                </li>
+                <li>
+                    Facilisis in pretium nisl aliquet
+                </li>
+                <li>
+                    Nulla volutpat aliquam velit
+                </li>
+            </ol>
+        </div>
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                回复榜
+            </h3>
+        </div>
+        <div class="panel-body">
+            <ol>
+                <li>
+                    Lorem ipsum dolor sit amet
+                </li>
+                <li>
+                    Consectetur adipiscing elit
+                </li>
+                <li>
+                    Integer molestie lorem at massa
+                </li>
+                <li>
+                    Facilisis in pretium nisl aliquet
+                </li>
+                <li>
+                    Nulla volutpat aliquam velit
+                </li>
+            </ol>
+        </div>
+    </div>
+{% endblock %}
+{% block bottom_content %}
+    <p>底部内容</p>
+{% endblock %}
+

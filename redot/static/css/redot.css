@@ -1,0 +1,12 @@
+/* 以下两个样式组合解决bootstrap同行div不等高问题 */
+.row {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        flex-wrap: wrap;
+    }
+.row > [class*='col-'] {
+    display: flex;
+    flex-direction: column;
+}

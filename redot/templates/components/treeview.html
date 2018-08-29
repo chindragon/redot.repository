@@ -1,0 +1,9 @@
+<ul id="forumtree" class="filetree">
+{% spaceless %}
+    {% if top_forumboard_nodes|length != 0 %}
+        {% for node in top_forumboard_nodes %}
+            {% include "components/treeview_node.html" %}
+        {% endfor %}
+    {% endif %}
+{% endspaceless %}
+</ul>
