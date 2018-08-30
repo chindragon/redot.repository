@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from forum.views import index, query_from_board_tree_node
+from forum.views import index, query_from_board_tree_node, login
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('', index),
+    path('index', index),
+    path('login', login),
     path('query_from_board_tree_node', query_from_board_tree_node, name='query_from_board_tree_node')
 ]

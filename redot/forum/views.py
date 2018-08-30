@@ -9,6 +9,10 @@ from forum.models import ForumBoard, ForumTopic
 # Create your views here.
 
 
+def login(request):
+    return render(request, 'forum/login.html')
+
+
 def index(request):
     top_forumboard_nodes = ForumBoard.objects.filter(parent_board__isnull=True)
     params = {

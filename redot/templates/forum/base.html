@@ -1,14 +1,15 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
-    <meta charset="utf-8">
-    <title>{% block title %}{% endblock %}</title>
-    {% block local_styles %}{% endblock %}
-    {% block local_js %}{% endblock %}
-    {% block extern_styles_js %}{% endblock %}
-    {% block head_ex %}{% endblock %}
-    {% block in_page_style %}{% endblock %}
-    {% block in_page_js %}{% endblock %}
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}{% endblock %}</title>
+        {% block local_styles %}{% endblock %}
+        {% block local_js %}{% endblock %}
+        {% block extern_styles_js %}{% endblock %}
+        {% block head_ex %}{% endblock %}
+        {% block in_page_style %}{% endblock %}
+        {% block in_page_js %}{% endblock %}
     </head>
 
     <body>
