@@ -136,5 +136,5 @@ STATICFILES_DIRS = (
 # 扩展系统的User,采用profile的方式
 AUTH_PROFILE_MODULE = 'forum.UserProfile'
 
-# 数据库日期时间对象序列化成json串
-SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+# @login_required 未登录用户无法访问时转到登录页面
+# LOGIN_URL = '/login'

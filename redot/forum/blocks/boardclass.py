@@ -40,7 +40,8 @@ def board_get_hot_topics_count(board, topiclist=None):
         for board in boards:
             board_get_hot_topics_count(board, topiclist)
 
-    return len(topiclist)
+    n = len(topiclist)
+    return n
 
 
 def board_get_total_topics_count(board, topiclist=None):
@@ -57,7 +58,8 @@ def board_get_total_topics_count(board, topiclist=None):
         for board in boards:
             board_get_total_topics_count(board, topiclist)
 
-    return len(topiclist)
+    n = len(topiclist)
+    return n
 
 
 def board_get_users_count(board, usrlist=None):
@@ -79,7 +81,8 @@ def board_get_users_count(board, usrlist=None):
         for board in boards:
             board_get_users_count(board, usrlist)
 
-    return len(usrlist)
+    n = len(usrlist)
+    return n
 
 
 def board_get_managers(board, usrlist=None, namelist=None):

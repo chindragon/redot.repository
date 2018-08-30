@@ -109,9 +109,21 @@
     <li class="pull-right">
          <a href="#" >注册</a>
     </li>
-    <li class="pull-right">
-         <a href="#">登录</a>
-    </li>
+    {% if islogin %}
+        <li class="pull-right">
+            <a href="logout" >注销</a>
+        </li>
+        <li class="pull-right">
+            <a class="disabled"><strong class="align-items-center">{{ username }}，你好！</strong></a>
+        </li>
+    {% else %}
+        <li class="pull-right">
+         <a href="login" >登录</a>
+        </li>
+        <li class="pull-right">
+            <a class="disabled"><strong class="align-items-center">游客，你好！</strong></a>
+        </li>
+    {% endif %}
 {% endblock %}
 {% block tab_card_left_part_items %}
     <div class="col-md-2 column panel panel-primary" id="tab_card_left_part">

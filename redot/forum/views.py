@@ -1,27 +1,71 @@
 # -*-coding:utf-8-*-
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.contrib import auth
+from django.contrib.auth.decorators import login_required
 import json
-# from django.core import serializers
 from forum.blocks import boardclass, topicclass, utily
 from forum.models import ForumBoard, ForumTopic
 
 # Create your views here.
 
 
-def login(request):
+def user_login(request):
+    """
+    登录输入页面
+    """
     return render(request, 'forum/login.html')
 
 
+def confirm_user_login(request):
+    """
+    登录验证，并跳转到合适的页面
+    """
+    request.encoding = 'utf-8'
+    if request.method == 'POST':
+        username = request.POST.get('username', None)
+        password = request.POST.get('password', None)
+        user = auth.authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                auth.login(request, user)
+                return index(request)
+            else:
+                print("Your account has been disabled!")
+
+    return user_login(request)
+
+
+def user_logout(request):
+    """
+    退出登录
+    """
+    auth.logout(request)
+    return index(request)
+
+
+# @login_required(login_url='/login')
 def index(request):
+    """
+    首页
+    """
+    params = dict()
+
     top_forumboard_nodes = ForumBoard.objects.filter(parent_board__isnull=True)
-    params = {
-        'top_forumboard_nodes': top_forumboard_nodes,
-    }
+    params['top_forumboard_nodes'] = top_forumboard_nodes
+    if request.user.is_authenticated:
+        params['islogin'] = True
+        params['username'] = request.user.userprofile.nickname
+    else:
+        params['islogin'] = False
+
     return render(request, 'forum/index.html', params)
 
 
 def query_from_board_tree_node(request):
+    """
+    用户点击树形列表节点时，调整页面显示
+    """
     dicts = dict()
     response = HttpResponse()
     response['Content-Type'] = "text/javascript"
@@ -40,7 +84,6 @@ def query_from_board_tree_node(request):
                 ztopic['author'] = topic.author.userprofile.nickname
                 ztopic['access_count'] = topic.access_count
                 ztopic['reply_count'] = topicclass.topic_get_reply_count(topic)
-                # ztopic['created_at'] = serializers.serialize('json', topic.created_at)
                 ztopic['created_at'] = utily.json_encoder(topic.created_at)
                 topiclist.append(ztopic)
 
@@ -67,3 +110,4 @@ def query_from_board_tree_node(request):
 
     response.write(json.dumps(dicts))
     return response
+
