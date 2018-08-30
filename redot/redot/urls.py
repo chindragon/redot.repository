@@ -23,6 +23,8 @@ urlpatterns = [
     path('index', views.index),
     path('login', views.user_login),
     path('logout', views.user_logout),
-    path('confirm_login', views.confirm_user_login),
+    path('register', views.user_register),
+    path('confirm_user_register', views.confirm_user_register),
+    path('confirm_user_login', views.confirm_user_login),
     path('query_from_board_tree_node', views.query_from_board_tree_node, name='query_from_board_tree_node')
 ]

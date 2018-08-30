@@ -2,7 +2,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib import auth
-from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+# from django.contrib.auth.decorators import login_required
 import json
 from forum.blocks import boardclass, topicclass, utily
 from forum.models import ForumBoard, ForumTopic
@@ -10,11 +11,64 @@ from forum.models import ForumBoard, ForumTopic
 # Create your views here.
 
 
+def user_register(request):
+    """
+    用户注册页面
+    """
+    return render(request, 'forum/register.html')
+
+
 def user_login(request):
     """
     登录输入页面
     """
     return render(request, 'forum/login.html')
+
+
+def confirm_user_register(request):
+    """
+    验证注册信息，并跳转到合适的页面
+    """
+    errors = []
+    request.encoding = 'utf-8'
+    if request.method == 'POST':
+        username = request.POST.get('username', None)
+        if not username:
+            errors.append('用户名不能为空！')
+        password = request.POST.get('password', None)
+        if not password:
+            errors.append('密码不能为空 ！')
+        confirm = request.POST.get('confirm', None)
+        if not confirm:
+            errors.append('确认密码不能为空！')
+        email = request.POST.get('email', None)
+        if not email:
+            errors.append('邮件不能为空！')
+
+        if password != confirm:
+            errors.append('两次输入的密码不一致！')
+
+        if len(errors) == 0:
+            user = auth.models.User.objects.create_user(username=username, password=password, email=email)
+            # user.userprofile.nickname = user.username
+            if user is not None:
+                messages.success(request, '注册成功，欢迎您!请登录...')
+                return user_login(request)
+            else:
+                errors.append('注册用户失败，用户名已存在！')
+
+    response = HttpResponse()
+    response['Content-Type'] = "text/html;charset=utf-8"
+    response.write("<html>")
+    response.write("<p>")
+    response.write(errors[0])
+    response.write("</p>")
+    response.write("<a href='register' target='self'>")
+    response.write("返回")
+    response.write("</a>")
+    response.write("</html>")
+    response.flush()
+    return response
 
 
 def confirm_user_login(request):
