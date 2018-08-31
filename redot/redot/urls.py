@@ -24,6 +24,11 @@ urlpatterns = [
     path('login', views.user_login),
     path('logout', views.user_logout),
     path('register', views.user_register),
+    path('user_info', views.user_info),
+    path('user_settings', views.user_settings),
+    path('modify_password', views.modify_password),
+    path('confirm_modify_password', views.confirm_modify_password),
+    path('confirm_user_settings', views.confirm_user_settings),
     path('confirm_user_register', views.confirm_user_register),
     path('confirm_user_login', views.confirm_user_login),
     path('query_from_board_tree_node', views.query_from_board_tree_node, name='query_from_board_tree_node')

@@ -107,18 +107,21 @@
 {% endblock %}
 {% block navigation_right_part_items %}
     <li class="pull-right">
-         <a href="register" >注册</a>
+         <a href="register" class="bg-info">注册</a>
     </li>
     {% if islogin %}
         <li class="pull-right">
-            <a href="logout" >注销</a>
+            <a href="logout" class="bg-info">注销</a>
+        </li>
+        <li class="pull-right">
+            <a href="user_info" class="bg-info">用户中心</a>
         </li>
         <li class="pull-right">
             <a class="disabled"><strong class="align-items-center">{{ username }}，你好！</strong></a>
         </li>
     {% else %}
         <li class="pull-right">
-         <a href="login" >登录</a>
+         <a href="login" class="bg-info">登录</a>
         </li>
         <li class="pull-right">
             <a class="disabled"><strong class="align-items-center">游客，你好！</strong></a>
