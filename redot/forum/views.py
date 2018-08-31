@@ -2,7 +2,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib import auth
-from django.contrib import messages
 # from django.contrib.auth.decorators import login_required
 import json
 from forum.blocks import boardclass, topicclass, utily
@@ -23,6 +22,34 @@ def user_login(request):
     登录输入页面
     """
     return render(request, 'forum/login.html')
+
+
+def confirm_user_register_pop_message(errors, response = None):
+    if response is None:
+        response = HttpResponse()
+
+    response = HttpResponse()
+    response['Content-Type'] = "text/html;charset=utf-8"
+    response.write("<html>")
+    response.write("<p>")
+
+    if len(errors) != 0:
+        response.write(errors[0])
+        response.write("</p>")
+        response.write("<a href='register' target='_self'>")
+        response.write("返回")
+    else:
+        response.write('注册成功，欢迎您!请登录...')
+        response.write("</p>")
+        response.write("<a href='login' target='_self'>")
+        response.write("去登陆")
+
+    response.write("</a>")
+    response.write("</html>")
+    response.flush()
+
+    return response
+
 
 
 def confirm_user_register(request):
@@ -50,24 +77,11 @@ def confirm_user_register(request):
 
         if len(errors) == 0:
             user = auth.models.User.objects.create_user(username=username, password=password, email=email)
-            # user.userprofile.nickname = user.username
-            if user is not None:
-                messages.success(request, '注册成功，欢迎您!请登录...')
-                return user_login(request)
-            else:
+            b = hasattr(user, 'userprofile')
+            if user is None:
                 errors.append('注册用户失败，用户名已存在！')
 
-    response = HttpResponse()
-    response['Content-Type'] = "text/html;charset=utf-8"
-    response.write("<html>")
-    response.write("<p>")
-    response.write(errors[0])
-    response.write("</p>")
-    response.write("<a href='register' target='self'>")
-    response.write("返回")
-    response.write("</a>")
-    response.write("</html>")
-    response.flush()
+    response = confirm_user_register_pop_message(errors)
     return response
 
 
