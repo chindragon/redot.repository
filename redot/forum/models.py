@@ -10,7 +10,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, verbose_name='用户', on_delete=models.CASCADE)
     nickname = models.CharField(max_length=16, default='', blank=False)
     phone = models.CharField(max_length=16, default='', blank=True)
-    sex = models.CharField(max_length=8, choices=[('male', '男性'), ('female', '女性'), ('None', '中性')], default='male')
+    sex = models.CharField(max_length=8, choices=[('male', '男性'), ('female', '女性'), ('none', '中性')], default='male')
 
     def __str__(self):
         return self.nickname
@@ -35,9 +35,11 @@ def create_user_profile(sender, instance, created, **kwargs):
             profile.nickname = instance.username  # 保证nickname不为空，会员详情页会允许修改这昵称
             profile.user = instance
             profile.save()
+    else:
+        if hasattr(instance, 'userprofile'):
+            instance.userprofile.save()
 
 
-# 不能注册这个函数，否则在添加用户是会出现错误
 signals.post_save.connect(create_user_profile, sender=User)
 
 

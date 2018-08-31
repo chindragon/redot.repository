@@ -184,31 +184,40 @@ def confirm_user_settings(request):
     errors = []
     request.encoding = 'utf-8'
     if request.method == 'POST':
-        username = request.POST.get('username', None)
-        if not username:
-            errors.append('用户名不能为空！')
-        password = request.POST.get('password', None)
-        if not password:
-            errors.append('密码不能为空 ！')
-        confirm = request.POST.get('confirm', None)
-        if not confirm:
-            errors.append('确认密码不能为空！')
         email = request.POST.get('email', None)
-        if not email:
-            errors.append('邮件不能为空！')
+        phone = request.POST.get('phone', None)
+        nickname = request.POST.get('nickname', None)
+        firstname = request.POST.get('firstname', None)
+        secondname = request.POST.get('secondname', None)
+        sex = request.POST.get('sex', None)
 
-        if password != confirm:
-            errors.append('两次输入的密码不一致！')
-
-        if len(errors) == 0:
-            user = auth.models.User.objects.create_user(username=username, password=password, email=email)
-            if user is None:
-                errors.append('注册用户失败，用户名已存在！')
+        if email != '':
+            request.user.email = email
+        if firstname != '':
+            request.user.first_name = firstname
+        if secondname != '':
+            request.user.last_name = secondname
+        if hasattr(request.user, 'userprofile'):
+            if nickname != '':
+                request.user.userprofile.nickname = nickname
+            if phone != '':
+                request.user.userprofile.phone = phone
+            if sex != '':
+                if sex.find('男') >= 0:
+                    request.user.userprofile.sex = 'male'
+                else:
+                    if sex.find('女') >= 0:
+                        request.user.userprofile.sex = 'female'
+                    else:
+                        request.user.userprofile.sex = 'none'
+        request.user.save()
+    else:
+        errors.append('设置失败！')
 
     if len(errors) == 0:
-        response = confirm_user_register_pop_message(True, successes=['注册成功，请登录...'], tag='去登录', url='login')
+        response = confirm_user_register_pop_message(True, successes=['设置成功，请重新登录...'], tag='去登录', url='login')
     else:
-        response = confirm_user_register_pop_message(False, errors=errors, tag='返回', url='register')
+        response = confirm_user_register_pop_message(False, errors=errors, tag='返回', url='user_settings')
     return response
 
 
