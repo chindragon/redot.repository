@@ -20,6 +20,7 @@ from forum import views
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    path('', views.index),
     path('index', views.index),
     path('login', views.user_login),
     path('logout', views.user_logout),

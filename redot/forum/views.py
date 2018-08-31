@@ -34,48 +34,34 @@ def get_user_info_from_request(request, dicts=None):
     return dicts
 
 
-def user_register(request):
-    """
-    用户注册页面
-    """
+def user_register(request):     # 用户注册页面
+    auth.logout(request)    # 先登出，再去注册页面
     return render(request, 'forum/register.html')
 
 
-def user_login(request):
-    """
-    登录输入页面
-    """
+def user_login(request):    # 登录输入页面
     return render(request, 'forum/login.html')
 
 
 @login_required(login_url='/login')
-def user_info(request):
-    """
-    用户信息
-    """
+def user_info(request):     # 用户信息
     dicts = get_user_info_from_request(request)
     return render(request, 'forum/user_info.html', dicts)
 
 
 @login_required(login_url='/login')
-def user_settings(request):
-    """
-    用户设置
-    """
+def user_settings(request):     # 用户设置
     dicts = get_user_info_from_request(request)
     return render(request, 'forum/user_settings.html', dicts)
 
 
 @login_required(login_url='/login')
-def modify_password(request):
-    """
-    修改密码
-    """
+def modify_password(request):   # 修改密码
     dicts = {'username': request.user.username}
     return render(request, 'forum/modify_password.html', dicts)
 
 
-def confirm_user_register_pop_message(is_success, errors=None, successes=None, tag=None, url=None):
+def pop_message(is_success, errors=None, successes=None, tag=None, url=None):
     if tag is None:
         tag = '返回'
     if url is None:
@@ -107,10 +93,7 @@ def confirm_user_register_pop_message(is_success, errors=None, successes=None, t
     return response
 
 
-def confirm_user_register(request):
-    """
-    验证注册信息，并跳转到合适的页面
-    """
+def confirm_user_register(request):     # 验证注册信息，并跳转到合适的页面
     errors = []
     request.encoding = 'utf-8'
     if request.method == 'POST':
@@ -136,17 +119,14 @@ def confirm_user_register(request):
                 errors.append('注册用户失败，用户名已存在！')
 
     if len(errors) == 0:
-        response = confirm_user_register_pop_message(True, successes=['注册成功！请登录...'], tag='去登陆', url='login')
+        response = pop_message(True, successes=['注册成功！请登录...'], tag='去登陆', url='login')
     else:
-        response = confirm_user_register_pop_message(False, errors=errors, tag='返回', url='register')
+        response = pop_message(False, errors=errors, tag='返回', url='register')
     return response
 
 
 @login_required(login_url='/login')
-def confirm_modify_password(request):
-    """
-    验证修改密码
-    """
+def confirm_modify_password(request):   # 验证修改密码
     errors = []
     request.encoding = 'utf-8'
     if request.method == 'POST':
@@ -170,17 +150,14 @@ def confirm_modify_password(request):
     if len(errors) == 0:
         request.user.set_password(newpassword)
         request.user.save()
-        response = confirm_user_register_pop_message(True, successes=['密码修改成功！请重新登录'], tag='去登录', url='login')
+        response = pop_message(True, successes=['密码修改成功！请重新登录'], tag='去登录', url='login')
     else:
-        response = confirm_user_register_pop_message(False, errors=errors, tag='返回', url='modify_password')
+        response = pop_message(False, errors=errors, tag='返回', url='modify_password')
     return response
 
 
 @login_required(login_url='/login')
-def confirm_user_settings(request):
-    """
-    验证用户设置的信息
-    """
+def confirm_user_settings(request):     # 验证用户设置的信息
     errors = []
     request.encoding = 'utf-8'
     if request.method == 'POST':
@@ -215,16 +192,13 @@ def confirm_user_settings(request):
         errors.append('设置失败！')
 
     if len(errors) == 0:
-        response = confirm_user_register_pop_message(True, successes=['设置成功，请重新登录...'], tag='去登录', url='login')
+        response = pop_message(True, successes=['设置成功，请重新登录...'], tag='去登录', url='login')
     else:
-        response = confirm_user_register_pop_message(False, errors=errors, tag='返回', url='user_settings')
+        response = pop_message(False, errors=errors, tag='返回', url='user_settings')
     return response
 
 
-def confirm_user_login(request):
-    """
-    登录验证，并跳转到合适的页面
-    """
+def confirm_user_login(request):    # 登录验证，并跳转到合适的页面
     errors = []
     request.encoding = 'utf-8'
     if request.method == 'POST':
@@ -242,23 +216,16 @@ def confirm_user_login(request):
     if len(errors) == 0:
         return index(request)
     else:
-        return confirm_user_register_pop_message(False, errors=errors, tag='返回', url='login')
+        return pop_message(False, errors=errors, tag='返回', url='login')
 
 
-def user_logout(request):
-    """
-    退出登录
-    """
+def user_logout(request):   # 退出登录
     auth.logout(request)
     return index(request)
 
 
-def index(request):
-    """
-    首页
-    """
+def index(request):     # 首页
     params = dict()
-
     top_forumboard_nodes = ForumBoard.objects.filter(parent_board__isnull=True)
     params['top_forumboard_nodes'] = top_forumboard_nodes
     if request.user.is_authenticated:
@@ -270,10 +237,7 @@ def index(request):
     return render(request, 'forum/index.html', params)
 
 
-def query_from_board_tree_node(request):
-    """
-    用户点击树形列表节点时，调整页面显示
-    """
+def query_from_board_tree_node(request):    # 用户点击树形列表节点时，调整页面显示
     dicts = dict()
     response = HttpResponse()
     response['Content-Type'] = "text/javascript"
