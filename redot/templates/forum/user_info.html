@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>用户信息</title>
+        <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+        <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row clearfix">
+                <div class="col-md-4 column col-md-offset-4">
+                    <div class="panel panel-info">
+						<div class="panel-heading">
+                            <h3 class="panel-title text-center">
+								用户信息及设置
+							</h3>
+						</div>
+						<div class="panel-body">
+							<div class="form-group">
+                                <h4 class="text-center center-block"><strong>{{ username }}</strong></h4>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-control">
+                                    <label>邮箱：</label><label>{{ email }}</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-control">
+                                    <label>电话：</label><label>{{ phone }}</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-control">
+                                    <label>昵称：</label><label>{{ nickname }}</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-control">
+                                    <label>贵姓：</label><label>{{ firstname }}</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-control">
+                                    <label>名字：</label><label>{{ secondname }}</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-control">
+                                    <label>性别：</label><label>{{ sex }}</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="btn-group btn-group-md">
+                                    <a type="text" href="user_settings" class="btn btn-info center-block">用户设置</a>
+                                    <a type="text" href="modify_password" class="btn btn-info center-block">修改密码</a>
+                                    <a type="text" href="index" class="btn btn-info"> 返回首页 </a>
+                                </div>
+                            </div>
+                        </div>
+					</div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
