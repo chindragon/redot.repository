@@ -277,6 +277,8 @@ def get_leaf_data(dbid, dicts=None):
         ztopic['created_at'] = utily.json_encoder(topic.created_at)
         topiclist.append(ztopic)
 
+    idlst, namelst = boardclass.board_get_managers(ForumBoard.objects.get(id=dbid))
+    dicts['manager'] = namelst
     dicts['topics'] = topiclist
     dicts['nav_items'] = topicclass.TopicsNavItems.items
     dicts['header'] = topicclass.TopicsTableHeader.header

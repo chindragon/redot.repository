@@ -68,8 +68,12 @@ function boards_table_body(data) {
 
         html += "<td class=\"text-center\">";
         var lst = data[i]["manager"];
-        for( var k = 0; k < lst.length; k++)
-            html += lst[k] + ",";
+        for( var k = 0; k < lst.length; k++) {
+            if(k != 0){
+                html += ",";
+            }
+            html += lst[k];
+        }
         html += "</td>";
 
         html += "<td class=\"text-center\">" + data[i]["user_count"] + "</td>";

@@ -84,7 +84,7 @@ function topics_nav_right(right) {
     return html;
 }
 
-function topics_nav(nav) {
+function topics_nav(nav, managers) {
     var html = "";
 
     html += "<ul class=\"nav nav-tabs\">";
@@ -92,6 +92,15 @@ function topics_nav(nav) {
     html += topics_nav_dropdown(nav);
     html += topics_nav_right(nav);
     html += "</ul>";
+
+    html += "<h5 class=\"bg-info\">" + "版主:";
+    for( var i = 0; i < managers.length; i++){
+        if(i != 0){
+            html += ",";
+        }
+        html += managers[i];
+    }
+    html += "</h5>";
 
     return html;
 }

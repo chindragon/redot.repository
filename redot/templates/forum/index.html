@@ -53,7 +53,7 @@
                             }
                             else if(result.status == "is_leaf") {
                                 var html = "<h3 class=\"bg-primary\">" + title + "</h3>";
-                                html += topics_nav(result.nav_items);
+                                html += topics_nav(result.nav_items, result.manager);
                                 html += topics_table(result.header,  result.topics);
                                 $("#tab_card_right_part").html(html);
                             }
@@ -155,8 +155,11 @@
                         <td class="text-center">{{ dat.name }}</td>
                         <td class="text-center">{{ dat.brief }}</td>
                         <td class="text-center">
-                        {% for magr in dat.manager%}
-                            {{ mgr }},
+                        {% for mgr in dat.manager%}
+                            {% if forloop.counter != 1 %}
+                                ,
+                            {% endif %}
+                            {{ mgr }}
                         {% endfor %}
                         </td>
                         <td class="text-center">{{ dat.user_count }}</td>

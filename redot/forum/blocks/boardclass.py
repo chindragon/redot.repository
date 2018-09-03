@@ -85,25 +85,56 @@ def board_get_users_count(board, usrlist=None):
     return n
 
 
+def board_get_parent_managers(board, usrlist=None, namelist=None):
+    if usrlist is None:
+        usrlist = []
+    if namelist is None:
+        namelist = []
+
+    while board.parent_board is not None:
+        board = models.ForumBoard.objects.get(id=board.parent_board_id)
+        bmus = models.ForumBoardsMappedUsers.objects.filter(board=board.id)
+        for bmu in bmus:
+            if not is_existed_in_list(usrlist, bmu.user_id):
+                group = Group.objects.get(name='版主')
+                if group is not None and len(group.user_set.filter(id=bmu.user_id)) != 0:
+                    usrlist.append(bmu.user_id)
+                    user = models.User.objects.get(id=bmu.user_id)
+                    namelist.append(user.userprofile.nickname)
+
+    return usrlist, namelist
+
+
+def board_get_child_managers(board, usrlist=None, namelist=None):
+    if usrlist is None:
+        usrlist = []
+    if namelist is None:
+        namelist = []
+
+    bmus = models.ForumBoardsMappedUsers.objects.filter(board=board.id)
+    for bmu in bmus:
+        if not is_existed_in_list(usrlist, bmu.user_id):
+            group = Group.objects.get(name='版主')
+            if group is not None and len(group.user_set.filter(id=bmu.user_id)) != 0:
+                usrlist.append(bmu.user_id)
+                user = models.User.objects.get(id=bmu.user_id)
+                namelist.append(user.userprofile.nickname)
+
+    boards = models.ForumBoard.objects.filter(parent_board=board.id)
+    for board in boards:
+        board_get_child_managers(board, usrlist, namelist)
+
+    return usrlist, namelist
+
+
 def board_get_managers(board, usrlist=None, namelist=None):
     if usrlist is None:
         usrlist = []
     if namelist is None:
         namelist = []
 
-    boards = models.ForumBoard.objects.filter(parent_board=board.id)
-    if len(boards) == 0:
-        bmus = models.ForumBoardsMappedUsers.objects.filter(board=board.id)
-        for bmu in bmus:
-            if not is_existed_in_list(usrlist, bmu.user_id):
-                user = models.User.objects.get(id=bmu.user_id)
-                group = Group.objects.filter(name='版主')
-                if len(group) != 0 and len(group.user_set.filter(id=user.id)) != 0:
-                    usrlist.append(bmu.user_id)
-                    namelist.append(user.userprofile.nickname)
-    else:
-        for board in boards:
-            board_get_managers(board, usrlist, namelist)
+    board_get_parent_managers(board, usrlist=usrlist, namelist=namelist)
+    board_get_child_managers(board, usrlist=usrlist, namelist=namelist)
 
     return usrlist, namelist
 
