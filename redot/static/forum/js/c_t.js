@@ -69,7 +69,7 @@ function boards_table_body(data) {
         html += "<td class=\"text-center\">";
         var lst = data[i]["manager"];
         for( var k = 0; k < lst.length; k++)
-            html += lst[k] + " ";
+            html += lst[k] + ",";
         html += "</td>";
 
         html += "<td class=\"text-center\">" + data[i]["user_count"] + "</td>";
@@ -132,7 +132,7 @@ function topics_table_body(data) {
 function topics_table(header, data) {
     var html = "";
 
-    html += "<table class=\"table table-hover table-striped\">";
+    html += "<table class=\"table table-hover table-bordered table-striped\">";
     html += topics_table_header(header);
     html += topics_table_body(data);
     html += "</table>";

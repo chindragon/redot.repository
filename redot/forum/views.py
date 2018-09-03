@@ -227,6 +227,7 @@ def user_logout(request):   # 退出登录
 def index(request):     # 首页
     params = dict()
     top_forumboard_nodes = ForumBoard.objects.filter(parent_board__isnull=True)
+    get_branch_data(top_forumboard_nodes, params)
     params['top_forumboard_nodes'] = top_forumboard_nodes
     if request.user.is_authenticated:
         params['islogin'] = True
@@ -237,6 +238,52 @@ def index(request):     # 首页
     return render(request, 'forum/index.html', params)
 
 
+def get_branch_data(boards, dicts=None):
+    if dicts is None:
+        dicts = dict()
+
+    lst = []
+    dicts['status'] = 'is_branch'
+    for board in boards:
+        data = dict()
+        data['name'] = board.name
+        data['brief'] = board.description
+        idlst, namelst = boardclass.board_get_managers(board)
+        data['manager'] = namelst
+        data['user_count'] = str(boardclass.board_get_users_count(board))
+        data['hot_total'] = str(boardclass.board_get_hot_topics_count(board)) + '/' + \
+                            str(boardclass.board_get_total_topics_count(board))
+        lst.append(data)
+
+    dicts['data'] = lst
+    dicts['header'] = boardclass.BoardsTableHeader.header
+
+    return dicts
+
+
+def get_leaf_data(dbid, dicts=None):
+    if dicts is None:
+        dicts = dict()
+
+    dicts['status'] = 'is_leaf'
+    topiclist = []
+    topics = ForumTopic.objects.filter(board=dbid)
+    for topic in topics:
+        ztopic = dict()
+        ztopic['title'] = topic.title
+        ztopic['author'] = topic.author.userprofile.nickname
+        ztopic['access_count'] = topic.access_count
+        ztopic['reply_count'] = topicclass.topic_get_reply_count(topic)
+        ztopic['created_at'] = utily.json_encoder(topic.created_at)
+        topiclist.append(ztopic)
+
+    dicts['topics'] = topiclist
+    dicts['nav_items'] = topicclass.TopicsNavItems.items
+    dicts['header'] = topicclass.TopicsTableHeader.header
+
+    return dicts
+
+
 def query_from_board_tree_node(request):    # 用户点击树形列表节点时，调整页面显示
     dicts = dict()
     response = HttpResponse()
@@ -244,41 +291,12 @@ def query_from_board_tree_node(request):    # 用户点击树形列表节点时�
 
     if request.POST:
         dbid = request.POST['dbid']
-        boards = ForumBoard.objects.filter(parent_board=dbid)
-        if len(boards) == 0:
-            dicts['status'] = 'is_leaf'
-
-            topiclist = []
-            topics = ForumTopic.objects.filter(board=dbid)
-            for topic in topics:
-                ztopic = dict()
-                ztopic['title'] = topic.title
-                ztopic['author'] = topic.author.userprofile.nickname
-                ztopic['access_count'] = topic.access_count
-                ztopic['reply_count'] = topicclass.topic_get_reply_count(topic)
-                ztopic['created_at'] = utily.json_encoder(topic.created_at)
-                topiclist.append(ztopic)
-
-            dicts['topics'] = topiclist
-            dicts['nav_items'] = topicclass.TopicsNavItems.items
-            dicts['header'] = topicclass.TopicsTableHeader.header
+        board = ForumBoard.objects.filter(id=dbid).get(id=dbid)
+        if board.is_leaf:
+            dicts = get_leaf_data(dbid)
         else:
-            dicts['status'] = 'is_not_leaf'
-
-            lst = []
-            for board in boards:
-                data = dict()
-                data['name'] = board.name
-                data['brief'] = board.description
-                idlst, namelst = boardclass.board_get_managers(board)
-                data['manager'] = namelst
-                data['user_count'] = str(boardclass.board_get_users_count(board))
-                data['hot_total'] = str(boardclass.board_get_hot_topics_count(board)) + '/' +\
-                                    str(boardclass.board_get_total_topics_count(board))
-                lst.append(data)
-
-            dicts['data'] = lst
-            dicts['header'] = boardclass.BoardsTableHeader.header
+            boards = ForumBoard.objects.filter(parent_board=dbid)
+            dicts = get_branch_data(boards)
 
     response.write(json.dumps(dicts))
     return response

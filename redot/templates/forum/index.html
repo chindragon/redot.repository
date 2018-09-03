@@ -46,7 +46,7 @@
                         dataType: "json",
                         success: function(result){
                             //alert(result.status);
-                            if(result.status == 'is_not_leaf'){
+                            if(result.status == 'is_branch'){
                                 var html = "<h3 class=\"bg-primary\">" + title + "</h3>";
                                 html += boards_table(result.header, result.data);
                                 $("#tab_card_right_part").html(html);
@@ -73,7 +73,7 @@
 {% endblock %}
 {% block navigation_left_part_items %}
     <li class="active">
-         <a href="#" data-toggle="tab">首页</a>
+         <a href="index" data-toggle="tab">首页</a>
     </li>
     <li>
          <a href="#"data-toggle="tab">简介</a>
@@ -135,6 +135,37 @@
 {% endblock %}
 {% block tab_card_right_part_items %}
     <div class="col-md-8 column" id="tab_card_right_part">
+        <h3 class="bg-primary">论坛板块</h3>
+        <table class="table table-hover table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">{{ header.no }}</th>
+                    <th class="text-center">{{ header.name }}</th>
+                    <th class="text-center">{{ header.brief }}</th>
+                    <th class="text-center">{{ header.manager }}</th>
+                    <th class="text-center">{{ header.user_count }}</th>
+                    <th class="text-center">{{ header.hot_total }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% spaceless %}
+                {% for dat in data %}
+                    <tr>
+                        <td class="text-center">{{ forloop.counter }}</td>
+                        <td class="text-center">{{ dat.name }}</td>
+                        <td class="text-center">{{ dat.brief }}</td>
+                        <td class="text-center">
+                        {% for magr in dat.manager%}
+                            {{ mgr }},
+                        {% endfor %}
+                        </td>
+                        <td class="text-center">{{ dat.user_count }}</td>
+                        <td class="text-center">{{ dat.hot_total }}</td>
+                    </tr>
+                {% endfor %}
+            {% endspaceless %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}
 {% block right_bar %}

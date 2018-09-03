@@ -97,8 +97,8 @@ def board_get_managers(board, usrlist=None, namelist=None):
         for bmu in bmus:
             if not is_existed_in_list(usrlist, bmu.user_id):
                 user = models.User.objects.get(id=bmu.user_id)
-                group = Group.objects.get(name='版主')
-                if len(group.user_set.filter(id=user.id)) != 0:
+                group = Group.objects.filter(name='版主')
+                if len(group) != 0 and len(group.user_set.filter(id=user.id)) != 0:
                     usrlist.append(bmu.user_id)
                     namelist.append(user.userprofile.nickname)
     else:
