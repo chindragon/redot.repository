@@ -15,12 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls import include
 from forum import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('', views.index),
+    path('ueditor', include('ueditor.urls')),
     path('index', views.index),
     path('login', views.user_login),
     path('logout', views.user_logout),

@@ -10,6 +10,10 @@ from forum.models import ForumBoard, ForumTopic
 # Create your views here.
 
 
+def ue_demo(request):
+    return render(request, 'ue.html')
+
+
 def get_user_info_from_request(request, dicts=None):
     if dicts is None:
         dicts = dict()

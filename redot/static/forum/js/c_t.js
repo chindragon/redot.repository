@@ -143,3 +143,18 @@ function topics_table(header, data) {
 
     return html;
 }
+
+window.ue = null;
+window.ue_id = 'editor';
+function topics_editor() {
+    var html = "";
+
+    html += "<script type=\"text/javascript\">";
+    html += "if(ue == null) {ue = UE.getEditor(ue_id);}";
+    html += "else {ue.render(ue_id);}";
+    html += "SyntaxHighlighter.all();";
+    html += "</script>";
+    html += "<script id=\"editor\" type=\"text/plain\"></script>";
+
+    return html;
+}

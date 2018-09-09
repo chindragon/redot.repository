@@ -4,6 +4,13 @@
 {% block title %}
     红点论坛首页
 {% endblock %}
+{% block ueditor_style_js %}
+    <link rel="stylesheet" type="text/css" href={% static '/UE/third-party/SyntaxHighlighter/shCoreDefault.css' %}>
+    <script type="text/javascript" src={% static '/UE/third-party/SyntaxHighlighter/shCore.js' %}></script>
+    <script type="text/javascript" src={% static '/UE/ueditor.config.js' %}></script>
+    <script type="text/javascript" src={% static '/UE/ueditor.all.min.js' %}></script>
+    <script type="text/javascript" src={% static '/UE/lang/zh-cn/zh-cn.js' %}></script>
+{% endblock %}
 {% block local_styles %}
     <link rel="stylesheet" href="{% static 'css/redot.css' %}">
     <script src={% static 'forum/js/c_t.js' %}></script>
@@ -55,6 +62,7 @@
                                 var html = "<h3 class=\"bg-primary\">" + title + "</h3>";
                                 html += topics_nav(result.nav_items, result.manager);
                                 html += topics_table(result.header,  result.topics);
+                                html += topics_editor();
                                 $("#tab_card_right_part").html(html);
                             }
                             else{
